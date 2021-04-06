@@ -42,7 +42,7 @@ add_queries(URL1, [query(Key, Val)|T], QURL) :-
 
 %% Retrives all reciepes 
 fetch_recipes(URL, Data) :-
-	setup_call_concat(
+	setup_call_cleanup(
 		http_open(URL, In, []),
 		json_read_dict(In, Data),
 		close(In)
