@@ -27,18 +27,20 @@ construct_url(Food, Queries, QURL) :-
 	name_value("app_id", Id, IdPair),
 	api_key(Key),
 	name_value("app_key", Key, KeyPair),
-	name_value("q", Food, FoodPair),
+	replace(Food, FoodPlus),
+	name_value("q", FoodPlus, FoodPair),
 	atomics_to_string([IdPair, KeyPair, FoodPair], '&', Tail),
 	string_concat("https://api.edamam.com/search?", Tail, URL),
 	add_queries(URL, Queries, QURL).
 
 
 %% adds all necessary extensions for the given list of queries
-add_queries(URL1, [], URL1).
+add_queries(URL1, [], QURL).
 
 add_queries(URL1, [query(Key, Val)|T], QURL) :-
 	string_concat(URL1, Val, URL),
 	add_queries(URL, T, URL, QURL).
+
 
 %% Retrives all reciepes 
 fetch_recipes(URL, Data) :-
@@ -47,3 +49,17 @@ fetch_recipes(URL, Data) :-
 		json_read_dict(In, Data),
 		close(In)
 	).
+
+%% replaces possible spaces with "+" for foods with more than one word
+replace(X,Y) :-
+	split_string(X, "\s", "\s", L),
+	atomic_list_concat(L, '+', Y).
+
+%% add allergies
+add_allergy(URL, [], AURL).
+
+add_allergy(URL, [H|T], AURL) :-
+	replace(H,Allergy),
+	name_value("&excluded", Allergy, AllergyPair),
+	string_concat(URL, AllergyPair, URL1),
+	add_allergy(URL1, T, AURL).
