@@ -1,4 +1,4 @@
-query("keto", "&health=keto-friendly").
+query('keto', '&health=keto-friendly').
 query("vegan", "&health=vegan").
 query("vegetarian", "&health=vegetarian").
 query("no pork", "&health=pork-free").
@@ -10,6 +10,7 @@ query("kosher", "&health=kosher").
 query("no soy", "&health=soy-free").
 query("no wheat", "&health=wheat-free").
 query("gluten free", "&health=wheat-free").
+query("gluten-free", "&health=wheat-free").
 query("no shellfish", "&health=shellfish-free").
 query("low sugar", "&health=sugar-conscious").
 

@@ -56,10 +56,11 @@ replace(X,Y) :-
 	atomic_list_concat(L, '+', Y).
 
 %% add allergies
+%% use query kb for (peaunuts, soy, dairy, shellfish, wheat, pork, gluten).
 add_allergy(URL, [], AURL).
 
 add_allergy(URL, [H|T], AURL) :-
 	replace(H,Allergy),
-	name_value("&excluded", Allergy, AllergyPair),
+	name_value('&excluded', Allergy, AllergyPair),
 	string_concat(URL, AllergyPair, URL1),
 	add_allergy(URL1, T, AURL).
