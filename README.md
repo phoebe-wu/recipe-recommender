@@ -1,4 +1,4 @@
-# recipe-recommender
+# Recipe Recommender
 A recipe recommender implemented in Prolog
 
 %% Sample:
