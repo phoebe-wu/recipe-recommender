@@ -17,6 +17,7 @@ query('no pork', "&health=pork-free").
 query('no red meat', "&health=no-red-meat").
 query('no fish', "&health=fish-free").
 query('no nuts', "&health=tree-nut-free&health=peanut-free").
+query('no meat', "&health=vegetarian").
 
 query('high fiber', "&diet=high-fiber").
 query('high protein', "&diet=high-protein").
