@@ -25,13 +25,17 @@ ask(Q,A) :-
 	recipe_request(Q, [], Food, C, []),
 	ask_api(Food, C, A).
 
-%% P0 and P3 are lists of words, that forms the recipe request
+%% P0 and P4 are lists of words, that forms the recipe request
 %% C0 - C4 are the list of constraints imposed on entity 
-recipe_request(P0, P3, Entity, C0, C3) :-
-	det(P0, P1, Entity, C0, C1),
-	food_phrase(P1, P2, Entity, C1, C2),
-	modifying_phrase(P2, P3, Entity, C2, C3).
+recipe_request(P0, P4, Entity, C0, C3) :-
+	leading_phrase(P0, P1),
+	det(P1, P2, Entity, C0, C1),
+	food_phrase(P2, P3, Entity, C1, C2),
+	modifying_phrase(P3, P4, Entity, C2, C3).
 
+leading_phrase(['I', 'want', 'to', 'cook' |P], P).
+leading_phrase(['I', 'want', 'to', 'make' |P], P).
+leading_phrase(P,P).
 
 det(['some' |P],P,_,C,C).
 det(['a' |P],P,_,C,C).
@@ -68,7 +72,7 @@ modifying_phrase(['that', 'are'|P0], P1, _, C0, C1) :-
 modifying_phrase(['that\'re'|P0], P1, _, C0, C1) :-
 	adjectives(P0,P1,_,C0,C1).
 modifying_phrase(['without'|P0], P1, _, C0, C1) :-
-	adjectives(P0,P1,_,C0,C1).
+	adjectives(['no'|P0],P1,_,C0,C1).
 modifying_phrase(['with'|P0], P1, _, C0, C1) :-
 	adjectives(P0,P1,_,C0,C1).
 modifying_phrase(P, P, _, C, C).
