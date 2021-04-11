@@ -23,7 +23,11 @@ start :-
     write("Please list any allergies. Enter none if you do not have any allergies "),
     readln(NextLn),
     allergy_ask(NextLn, Allergy_Extensions),
-    string_concat(Prelim_URL, Allergy_Extensions, Final_URL),
+    string_concat(Prelim_URL, Allergy_Extensions, Next_URL),
+    write("How much time do you have? "),
+    readln(LastLn),
+    atomics_to_string(LastLn, Time),
+    add_time_constraint(Next_URL, Time, Final_URL),
     ask(Final_URL,A).
 
 ask(Q,A) :-
