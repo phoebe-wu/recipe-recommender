@@ -27,3 +27,6 @@ query('snack', "&mealType=Snack").
 query('dessert', "&dishType=Desserts").
 query('drink', "&dishType=Drinks").
 
+query(EP, EQ) :-
+    atom_concat('no ', E, EP),
+    atomic_concat("&excluded=", E, EQ).
