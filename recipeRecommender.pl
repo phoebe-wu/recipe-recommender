@@ -74,21 +74,50 @@ food_phrase(P0, P2, Entity, C0, C2) :-
 	adjectives(P0, P1, Entity, C0, C1),
 	food(P1, P2, Entity, C1, C2).
 
+%% try: food_phrase([wheat, free, brownies], P, brownies, C, C1).
+
 %% UNFINISHED!!! 
 %% NOTE: might cause problems if we have a list of Queries and Adjectives (NEED SOLUTION)
 %% 		-- could we make a query from the Adj (?????)
 %% 
+
 adjectives([Restriction|T], P, _, [Extension|C0], C) :-
 	query(Restriction, Extension),
 	adjectives(T, P, _, C0, C).
+adjectives(RP, P, _, [Extension|C], C) :-
+	append(R,P, RP),
+	multi_part_word(R, Restriction),
+	query(Restriction, Extension).
 adjectives(P,P,_,C,C).
 
 %% try: adjectives([vegan, chicken], P, E, C, C1).
+%% try: adjectives([no, wheat], P, E, C, C1).
+%% try: adjectives([no, wheat, chicken], P, E, C, C1).
 %% try: adjectives([vegan, chicken, with, no, shellfish], P, E, C, C1).
+%% try: adjectives([gluten, free, brownies], P, E, C, C1).
+%% try: adjectives([wheat, free, brownies], P, E, C, C1).
+
+multi_part_word(P,W) :-
+	standardize_free(P,W).
+multi_part_word(P,W) :-
+	atomic_list_concat(P, ' ', W).
+multi_part_word(P,W) :-
+	atomic_list_concat(P,W).
+	
+%% try: multi_part_word([no, wheat, brownies], W).
+
+%% standardizes decriptors such as "gluten free" or "gluten free" into "no gluten"
+standardize_free([O, '-', 'free'], W) :-
+	atomic_list_concat(['no', O], ' ', W).
+standardize_free([O, 'free'], W) :-
+	atomic_list_concat(['no', O], ' ', W).
+
+%% try: standardize_free([wheat, free], W).
+
 
 food([Food|P],P,Food,C,C).
 
-%% try: food([chicken, with, no, shellfish], F, C, C).
+%% try: food([chicken, with, no, shellfish], P, F, C, C).
 
 modifying_phrase(['that', 'is'|P0], P1, _, C0, C1) :-
 	adjectives(P0,P1,_,C0,C1).
