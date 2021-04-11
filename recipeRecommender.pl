@@ -81,13 +81,14 @@ food_phrase(P0, P2, Entity, C0, C2) :-
 %% 		-- could we make a query from the Adj (?????)
 %% 
 
-adjectives([Restriction|T], P, _, [Extension|C0], C) :-
+adjectives([Restriction|T], P, Entity, [Extension|C0], C) :-
 	query(Restriction, Extension),
-	adjectives(T, P, _, C0, C).
-adjectives(RP, P, _, [Extension|C], C) :-
-	append(R,P, RP),
+	adjectives(T, P, Entity, C0, C).
+adjectives(RP, P, Entity, [Extension|C0], C) :-
+	append(R,P1, RP),
 	multi_part_word(R, Restriction),
-	query(Restriction, Extension).
+	query(Restriction, Extension),
+	adjectives(P1,P,Entity,C0,C).
 adjectives(P,P,_,C,C).
 
 %% try: adjectives([vegan, chicken], P, E, C, C1).
