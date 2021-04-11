@@ -19,11 +19,15 @@ start :-
     write("What would you like to cook? "), 
     flush_output(current_output),
     readln(Ln),
-    ask(Ln,A).
+    prelim_ask(Ln, Prelim_URL),
+    write("Please list any allergies. Enter none if you do not have any allergies "),
+    readln(NextLn),
+    allergy_ask(NextLn, Allergy_Extensions),
+    string_concat(Prelim_URL, Allergy_Extensions, Final_URL),
+    ask(Final_URL,A).
 
 ask(Q,A) :-
-	recipe_request(Q, [], Food, C, []),
-	ask_api(Food, C, A),
+	fetch_recipes(Q, A),
 	get_recipe_details(A, Title, Ingredients, Link),
 	write("We recommend, "),
 	writeln(Title),
@@ -33,8 +37,16 @@ ask(Q,A) :-
 	writeln(Link).
 
 prelim_ask(Q, URL) :-
-     recipe_request(Ln, [], Food, C, []),
+     recipe_request(Q, [], Food, C, []),
      construct_url(Food, C, URL).
+
+allergy_ask(Q, Extensions) :-
+	allergies(Q, P),
+	separate_allergies(P, Q1, A1),
+	atomic_list_concat(Q1, '+', Q2),
+     atom_string(Q2, Q3),
+	add_allergy(Q3, A1, Extensions).
+
 
 %% P0 and P4 are lists of words, that forms the recipe request
 %% C0 - C4 are the list of constraints imposed on entity 

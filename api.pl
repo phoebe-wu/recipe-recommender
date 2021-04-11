@@ -57,10 +57,10 @@ fetch_recipes(URL, Data) :-
 
 %% add allergies
 %% use query kb for (peaunuts, nuts, red meat, soy, dairy, shellfish, wheat, pork, fish, gluten).
-add_allergy(URL, [], AURL).
+add_allergy(URL, [], URL).
 add_allergy(URL, [H|T], AURL) :-
-	replace(H,Allergy),
-	name_value('&excluded', Allergy, AllergyPair),
+	atom_string(H, Allergy),
+	name_value("&excluded", Allergy, AllergyPair),
 	string_concat(URL, AllergyPair, URL1),
 	add_allergy(URL1, T, AURL).
 
