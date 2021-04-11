@@ -18,12 +18,18 @@
 start :-
     write("What would you like to cook? "), flush_output(current_output),
     readln(Ln),
-	ask(Ln,A),
-	writeln(A).
+	ask(Ln,A).
 
 ask(Q,A) :-
 	recipe_request(Q, [], Food, C, []),
-	ask_api(Food, C, A).
+	ask_api(Food, C, A),
+	get_recipe_details(A, Title, Ingredients, Link),
+	write("We recommend, "),
+	writeln(Title),
+	writeln("Ingredient List: "),
+	writeln(Ingredients),
+	write("Link to Recipe: "),
+	writeln(Link).
 
 %% P0 and P4 are lists of words, that forms the recipe request
 %% C0 - C4 are the list of constraints imposed on entity 
@@ -58,8 +64,6 @@ adjectives(RP, P, _, [Extension|C], C) :-
 	append(R,P, RP),
 	multi_part_word(R, Restriction),
 	query(Restriction, Extension).
-%adjectives([Adj|P, P, _, [Adj|C], C). % not sure what's going on here
-%adjectives(['doesn\'t have'|P], P, _, []) %% unfinished
 adjectives(P,P,_,C,C).
 
 %% try: adjectives([vegan, chicken], P, E, C, C1).
