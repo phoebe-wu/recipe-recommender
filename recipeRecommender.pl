@@ -28,6 +28,7 @@ start :-
     readln(TimeLn),
     atomics_to_string(TimeLn, Time),
     add_time_constraint(Next_URL, Time, Final_URL),
+    writeln(Final_URL),
     fetch_recipes(Final_URL, A),
     nb_setval(count, 0),
     handle_request(yes, A).
@@ -41,9 +42,6 @@ handle_request(yes, A) :-
 	write("Would you like to see a different recipe? (yes or no) "),
 	readln(AnotherLn),
 	yes_or_no(AnotherLn, A).
-
-handle_request(yes, []) :-
-	write("That is all our recommendations. Please do a different search ").
 
 handle_request(no, A) :-
 	nl,
@@ -62,9 +60,10 @@ prelim_ask(Q, URL) :-
 allergy_ask(Q, Extensions) :-
 	allergies(Q, P),
 	separate_allergies(P, Q1, A1),
-	atomic_list_concat(Q1, '+', Q2),
-     atom_string(Q2, Q3),
-	add_allergy(Q3, A1, Extensions).
+	make_queries(Q1, Q2),
+     atomics_to_string(Q2, Q3),
+	add_allergy(Q3, A1, Extensions),
+	writeln(Extensions).
 
 
 %% P0 and P4 are lists of words, that forms the recipe request
