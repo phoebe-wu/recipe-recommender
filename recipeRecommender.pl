@@ -115,7 +115,11 @@ standardize_free([O, 'free'], W) :-
 %% try: standardize_free([wheat, free], W).
 
 
+%% returns true if Food is the first part of the phrase. Food can consist of multiple words.
 food([Food|P],P,Food,C,C).
+food(P0,P1,Food,C,C) :-
+	append(FP,P1,P0),
+	atomic_list_concat(FP,'+',Food).
 
 %% try: food([chicken, with, no, shellfish], P, F, C, C).
 
