@@ -28,17 +28,27 @@ start :-
     readln(TimeLn),
     atomics_to_string(TimeLn, Time),
     add_time_constraint(Next_URL, Time, Final_URL),
-    ask(Final_URL,A).
+    writeln(Final_URL),
+    fetch_recipes(Final_URL, A),
+    nb_setval(count, 0),
+    handle_request(yes, A).
 
-ask(Q,A) :-
-	fetch_recipes(Q, A),
-	get_recipe_details(A, Title, Ingredients, Link),
-	write("We recommend, "),
-	writeln(Title),
-	writeln("Ingredient List: "),
-	writeln(Ingredients),
-	write("Link to Recipe: "),
-	writeln(Link).
+handle_request(yes, A) :-
+	nb_getval(count, C), NewC is C + 1, nb_setval(count, NewC),
+	nb_getval(count, Num),
+	nl,
+	print_recipe_details(A, Num),
+	nl,
+	write("Would you like to see a different recipe? (yes or no) "),
+	readln(AnotherLn),
+	yes_or_no(AnotherLn, A).
+
+handle_request(no, A) :-
+	nl,
+	write("Thank you for using our recipe recommender! ").
+
+yes_or_no([R|P], A) :-
+	handle_request(R, A).
 
 prelim_ask(Q, URL) :-
      recipe_request(Q, [], Food, C, []),
@@ -47,9 +57,10 @@ prelim_ask(Q, URL) :-
 allergy_ask(Q, Extensions) :-
 	allergies(Q, P),
 	separate_allergies(P, Q1, A1),
-	atomic_list_concat(Q1, '+', Q2),
-     atom_string(Q2, Q3),
-	add_allergy(Q3, A1, Extensions).
+	make_queries(Q1, Q2),
+     atomics_to_string(Q2, Q3),
+	add_allergy(Q3, A1, Extensions),
+	writeln(Extensions).
 
 
 %% P0 and P4 are lists of words, that forms the recipe request
@@ -63,6 +74,7 @@ recipe_request(P0, P4, Entity, C0, C3) :-
 leading_phrase(['I', 'want', 'to', 'cook' |P], P).
 leading_phrase(['I', 'want', 'to', 'make' |P], P).
 leading_phrase(['I', 'am', 'allergic', 'to'|P], P).
+leading_phrase(['I\'m', 'allergic', 'to'|P], P).
 leading_phrase(P,P).
 
 det(['some' |P],P,_,C,C).
@@ -149,7 +161,10 @@ allergies(P0, P2) :-
 	allergens(P1, P2).
 
 %% allergens is the list of things user wants absent from their recipes
-allergens(P,P).
+allergens(P,P2) :-
+	delete(P, ',', P1),
+	delete(P1, 'and', P2).
+
 
 %% separates allergies into those who are queries in kb and those who are not
 separate_allergies(L, Q, A) :-
