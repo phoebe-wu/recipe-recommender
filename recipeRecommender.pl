@@ -28,11 +28,13 @@ start :-
     readln(TimeLn),
     atomics_to_string(TimeLn, Time),
     add_time_constraint(Next_URL, Time, Final_URL),
-    writeln(Final_URL),
+    writeln(Final_URL), %% testing - REMEMBER TO REMOVE LATER
     fetch_recipes(Final_URL, A),
     nb_setval(count, 0),
     handle_request(yes, A).
 
+%% returns first recipe details to user 
+%% returns the following recipes if user wants to see more recipes
 handle_request(yes, A) :-
 	nb_getval(count, C), NewC is C + 1, nb_setval(count, NewC),
 	nb_getval(count, Num),
@@ -43,26 +45,29 @@ handle_request(yes, A) :-
 	readln(AnotherLn),
 	yes_or_no(AnotherLn, A).
 
+%% ends program when user does not want to see any more recipes
 handle_request(no, A) :-
 	nl,
 	write("Thank you for using our recipe recommender! ").
 
+%% parses user response if they want to see more recipes
 yes_or_no([R|P], A) :-
 	handle_request(R, A).
 
+%% constructs preliminary URL based on users first recipe request
 prelim_ask(Q, URL) :-
      recipe_request(Q, [], Food, C, []),
      construct_url(Food, C, URL).
 
+%% creates the extensions for any allergies the user might have
 allergy_ask(Q, Extensions) :-
 	allergies(Q, P),
 	separate_allergies(P, Q1, A1),
-	make_queries(Q1, Q2),
+	parse_query_extensions(Q1, Q2),
      atomics_to_string(Q2, Q3),
-	add_allergy(Q3, A1, Extensions),
-	writeln(Extensions).
+	add_allergy(Q3, A1, Extensions).
 
-
+%% The recipe request made
 %% P0 and P4 are lists of words, that forms the recipe request
 %% C0 - C4 are the list of constraints imposed on entity 
 recipe_request(P0, P4, Entity, C0, C3) :-
@@ -71,28 +76,28 @@ recipe_request(P0, P4, Entity, C0, C3) :-
 	food_phrase(P2, P3, Entity, C1, C2),
 	modifying_phrase(P3, P4, Entity, C2, C3).
 
+%% An optional leading phrase for recipe request
 leading_phrase(['I', 'want', 'to', 'cook' |P], P).
 leading_phrase(['I', 'want', 'to', 'make' |P], P).
 leading_phrase(['I', 'am', 'allergic', 'to'|P], P).
 leading_phrase(['I\'m', 'allergic', 'to'|P], P).
 leading_phrase(P,P).
 
+%% An optional determiner in recipe request
 det(['some' |P],P,_,C,C).
 det(['a' |P],P,_,C,C).
 det(['an' |P],P,_,C,C).
 det(P,P,_,C,C).
 
+%% food_phrase contains the food to search for
 food_phrase(P0, P2, Entity, C0, C2) :-
 	adjectives(P0, P1, Entity, C0, C1),
 	food(P1, P2, Entity, C1, C2).
 
 %% try: food_phrase([wheat, free, brownies], P, brownies, C, C1).
 
-%% UNFINISHED!!! 
-%% NOTE: might cause problems if we have a list of Queries and Adjectives (NEED SOLUTION)
-%% 		-- could we make a query from the Adj (?????)
-%% 
-
+%% the list of adjectives/constraints put on the food
+%% e.g. vegan, gluten-free 
 adjectives([Restriction|T], P, Entity, [Extension|C0], C) :-
 	query(Restriction, Extension),
 	adjectives(T, P, Entity, C0, C).
@@ -136,6 +141,7 @@ food(P0,P1,Food,C,C) :-
 
 %% try: food([chicken, with, no, shellfish], P, F, C, C).
 
+%% An optional modifying phrase that further modifies the recipe criteria
 modifying_phrase(['that', 'is'|P0], P1, _, C0, C1) :-
 	adjectives(P0,P1,_,C0,C1).
 modifying_phrase(['that\'s'|P0], P1, _, C0, C1) :-
@@ -166,18 +172,7 @@ allergens(P,P2) :-
 	delete(P1, 'and', P2).
 
 
-%% separates allergies into those who are queries in kb and those who are not
-separate_allergies(L, Q, A) :-
-	include(is_query, L, Q),
-	exclude(is_query, L, A).
 
-%% is_query returns true if Q is a query
-is_query(Q) :-
-	member(Q, [gluten, shellfish, soy, wheat, peanuts, diary, pork, fish, nuts]).
 
-%% takes lists of queries and returns their extension
-make_queries([], []).
-make_queries([H|T], [Extension|Q]) :-
-	atomic_concat('no ', H, HQ),
-	query(HQ, Extension),
-	make_queries(T, Q). 
+
+
