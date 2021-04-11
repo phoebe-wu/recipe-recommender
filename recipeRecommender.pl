@@ -28,11 +28,32 @@ start :-
     readln(TimeLn),
     atomics_to_string(TimeLn, Time),
     add_time_constraint(Next_URL, Time, Final_URL),
-    ask(Final_URL,A).
+    fetch_recipes(Final_URL, A),
+    nb_setval(count, 0),
+    handle_request(yes, A).
 
-ask(Q,A) :-
-	fetch_recipes(Q, A),
-	print_recipe_details(A).
+handle_request(yes, A) :-
+	nb_getval(count, C), NewC is C + 1, nb_setval(count, NewC),
+	nb_getval(count, Num),
+	nl,
+	print_recipe_details(A, Num),
+	nl,
+	write("Would you like to see a different recipe? (yes or no) "),
+	readln(AnotherLn),
+	yes_or_no(AnotherLn, A).
+
+handle_request(yes, []) :-
+	write("That is all our recommendations. Please do a different search ").
+
+handle_request(no, A) :-
+	nl,
+	write("Thank you for using our recipe recommender! ").
+
+yes_or_no(['yes'|P], A) :-
+	handle_request(yes, A).
+
+yes_or_no(['no'|P], A) :-
+	handle_request(no, A).
 
 prelim_ask(Q, URL) :-
      recipe_request(Q, [], Food, C, []),
