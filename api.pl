@@ -36,7 +36,6 @@ construct_url(Food, Queries, QURL) :-
 
 %% adds all necessary extensions for the given list of queries
 add_queries(URL1, [], URL1).
-
 add_queries(URL1, [Restriction|T], QURL) :-
 	string_concat(URL1, Restriction, URL),
 	add_queries(URL, T, QURL).

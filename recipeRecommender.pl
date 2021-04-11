@@ -16,9 +16,10 @@
 
 
 start :-
-    write("What would you like to cook? "), flush_output(current_output),
+    write("What would you like to cook? "), 
+    flush_output(current_output),
     readln(Ln),
-	ask(Ln,A).
+    ask(Ln,A).
 
 ask(Q,A) :-
 	recipe_request(Q, [], Food, C, []),
@@ -41,6 +42,7 @@ recipe_request(P0, P4, Entity, C0, C3) :-
 
 leading_phrase(['I', 'want', 'to', 'cook' |P], P).
 leading_phrase(['I', 'want', 'to', 'make' |P], P).
+leading_phrase(['I', 'am', 'allergic', 'to'|P], P).
 leading_phrase(P,P).
 
 det(['some' |P],P,_,C,C).
@@ -80,3 +82,32 @@ modifying_phrase(['without'|P0], P1, _, C0, C1) :-
 modifying_phrase(['with'|P0], P1, _, C0, C1) :-
 	adjectives(P0,P1,_,C0,C1).
 modifying_phrase(P, P, _, C, C).
+
+%% e.g. 
+%?- allergies([shellfish],P).
+%?- allergies([I, am, allergic, to, shrimp],P).
+%?- allergies([I, am, allergic, to, shrimp, and, garlic],P).
+%?- allergies([peanuts, apples, tomatoes],P).
+%% allergies is true if P2 is the list of foods the user is allergic to
+allergies(P0, P2) :-
+	leading_phrase(P0, P1),
+	allergens(P1, P2).
+
+%% allergens is the list of things user wants absent from their recipes
+allergens(P,P).
+
+%% separates allergies into those who are queries in kb and those who are not
+separate_allergies(L, Q, A) :-
+	include(is_query, L, Q),
+	exclude(is_query, L, A).
+
+%% is_query returns true if Q is a query
+is_query(Q) :-
+	member(Q, [gluten, shellfish, soy, wheat, peanuts, diary, pork, fish, nuts]).
+
+%% takes lists of queries and returns their extension
+make_queries([], []).
+make_queries([H|T], [Extension|Q]) :-
+	atomic_concat('no ', H, HQ),
+	query(HQ, Extension),
+	make_queries(T, Q).
