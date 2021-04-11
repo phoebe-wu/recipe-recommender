@@ -57,15 +57,29 @@ replace(X,Y) :-
 	atomic_list_concat(L, '+', Y).
 
 %% add allergies
-%% use query kb for (peaunuts, soy, dairy, shellfish, wheat, pork, gluten).
+%% use query kb for (peaunuts, nuts, red meat, soy, dairy, shellfish, wheat, pork, fish, gluten).
 add_allergy(URL, [], AURL).
-
 add_allergy(URL, [H|T], AURL) :-
 	replace(H,Allergy),
 	name_value('&excluded', Allergy, AllergyPair),
 	string_concat(URL, AllergyPair, URL1),
 	add_allergy(URL1, T, AURL).
 
+%% add time restriction to api fetch
+add_time_constraint(URL, Time, TURL) :-
+	name_value('&time', Time, TimePair),
+	string_concat(URL, TimePair, TURL).
+
+
 ask_api(Food, Restrictions, A) :-
 	construct_url(Food, Restrictions, URL),
 	fetch_recipes(URL, A).
+
+%% gets details from the first recipe
+get_recipe_details(Data, Title, Ingredients, Link) :-
+	Hits = Data.get('hits'),
+	nth1(1, Hits, FirstHit),
+	Recipe = FirstHit.get('recipe'),
+	Title = Recipe.get('label'),
+	Ingredients = Recipe.get('ingredientLines'),
+	Link = Recipe.get('url').
