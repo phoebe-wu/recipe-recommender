@@ -32,6 +32,10 @@ ask(Q,A) :-
 	write("Link to Recipe: "),
 	writeln(Link).
 
+prelim_ask(Q, URL) :-
+     recipe_request(Ln, [], Food, C, []),
+     construct_url(Food, C, URL).
+
 %% P0 and P4 are lists of words, that forms the recipe request
 %% C0 - C4 are the list of constraints imposed on entity 
 recipe_request(P0, P4, Entity, C0, C3) :-

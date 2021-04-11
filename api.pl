@@ -27,8 +27,8 @@ construct_url(Food, Queries, QURL) :-
 	name_value("app_id", Id, IdPair),
 	api_key(Key),
 	name_value("app_key", Key, KeyPair),
-	replace(Food, FoodPlus),
-	name_value("q", FoodPlus, FoodPair),
+	%%replace(Food, FoodPlus),
+	name_value("q", Food, FoodPair),
 	atomics_to_string([IdPair, KeyPair, FoodPair], '&', Tail),
 	string_concat("https://api.edamam.com/search?", Tail, URL),
 	add_queries(URL, Queries, QURL).
@@ -51,9 +51,9 @@ fetch_recipes(URL, Data) :-
 	).
 
 %% replaces possible spaces with "+" for foods with more than one word
-replace(X,Y) :-
-	split_string(X, "\s", "\s", L),
-	atomic_list_concat(L, '+', Y).
+%%replace(X,Y) :-
+	%%split_string(X, "\s", "\s", L),
+	%%atomic_list_concat(L, '+', Y).
 
 %% add allergies
 %% use query kb for (peaunuts, nuts, red meat, soy, dairy, shellfish, wheat, pork, fish, gluten).
