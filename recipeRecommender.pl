@@ -66,14 +66,17 @@ multi_part_food(P,Food) :-
 %% 		-- could we make a query from the Adj (?????)
 %% 
 %%adjectives([],_,_,[],_).
-adjectives([Restriction|P], P1, Entity, [Extension|C], C1) :-
-	query(Restriction, Extension),
-	adjectives(P,P1,Entity,C,C1).
-adjectives(RP, P1, Entity, [Extension|C], C1) :-
-	append(R,P, RP),
-	multi_part_adj(R, Restriction),
-	query(Restriction, Extension),
-	adjectives(P,P1,Entity,C,C1).
+% adjectives([Restriction|P], P1, Entity, [Extension|C], C1) :-
+% 	query(Restriction, Extension),
+% 	adjectives(P,P1,Entity,C,C1).
+% adjectives(RP, P1, Entity, [Extension|C], C1) :-
+% 	append(R,P, RP),
+% 	multi_part_adj(R, Restriction),
+% 	query(Restriction, Extension),
+% 	adjectives(P,P1,Entity,C,C1).
+adjectives(P0,P2,Entity,C0,C2) :-
+	adj(P0,P1,Entity,C0,C1),
+	adjectives(P1,P2,Entity,C1,C2).
 adjectives(P,P,_,C,C).
 
 %% try: adjectives([vegan, chicken], P, E, C, C1).
@@ -84,19 +87,26 @@ adjectives(P,P,_,C,C).
 %% try: adjectives([wheat, free, brownies], P, E, C, C1).
 %% try: adjectives([vegan, wheat, free, brownies], P, E, C, C1).
 
-multi_part_adj(P,W) :-
-	standardize_free(P,W).
-multi_part_adj(P,W) :-
-	atomic_list_concat(P, ' ', W).
-multi_part_adj(P,W) :-
-	atomic_list_concat(P,W).
+adj([Restriction|P], P, _, [Extension|C], C) :-
+	query(Restriction, Extension).
+adj(P0, P1, _, [Extension|C], C) :-
+	multi_part_adj(P0, P1, Restriction),
+	query(Restriction, Extension).
+adj(P,P,_,C,C).
+
+multi_part_adj(P0,P1,W) :-
+	standardize_free(P0,P1,W).
+multi_part_adj(P0,_,W) :-
+	atomic_list_concat(P0, ' ', W).
+multi_part_adj(P0,_,W) :-
+	atomic_list_concat(P0,W).
 	
 %% try: multi_part_adj([no, wheat, brownies], W).
 
 %% standardizes decriptors such as "gluten free" or "gluten free" into "no gluten"
-standardize_free([O, '-', 'free'], W) :-
+standardize_free([O, '-', 'free'| P], P, W) :-
 	atomic_list_concat(['no', O], ' ', W).
-standardize_free([O, 'free'], W) :-
+standardize_free([O, 'free'| P], P, W) :-
 	atomic_list_concat(['no', O], ' ', W).
 
 %% try: standardize_free([wheat, free], W).
