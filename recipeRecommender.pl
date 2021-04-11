@@ -58,7 +58,7 @@ allergy_ask(Q, Extensions) :-
 	allergies(Q, P),
 	separate_allergies(P, Q1, A1),
 	make_queries(Q1, Q2),
-     atomics_to_string(Q2, Q3),
+    atomics_to_string(Q2, Q3),
 	add_allergy(Q3, A1, Extensions),
 	writeln(Extensions).
 
@@ -129,7 +129,6 @@ standardize_free([O, 'free'], W) :-
 
 
 %% returns true if Food is the first part of the phrase. Food can consist of multiple words.
-food([Food|P],P,Food,C,C).
 food(P0,P1,Food,C,C) :-
 	append(FP,P1,P0),
 	atomic_list_concat(FP,'+',Food).
