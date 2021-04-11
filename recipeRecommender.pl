@@ -24,9 +24,11 @@ ask(Q,A) :-
 	recipe_request(Q, [], Food, C, []),
 	ask_api(Food, C, A),
 	get_recipe_details(A, Title, Ingredients, Link),
-	write("We recommend "),
+	write("We recommend, "),
 	writeln(Title),
+	writeln("Ingredient List: "),
 	writeln(Ingredients),
+	write("Link to Recipe: "),
 	writeln(Link).
 
 %% P0 and P4 are lists of words, that forms the recipe request

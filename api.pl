@@ -75,7 +75,7 @@ ask_api(Food, Restrictions, A) :-
 	construct_url(Food, Restrictions, URL),
 	fetch_recipes(URL, A).
 
-%% gets details from the first recipe 
+%% gets details from the first recipe
 get_recipe_details(Data, Title, Ingredients, Link) :-
 	Hits = Data.get('hits'),
 	nth1(1, Hits, FirstHit),
