@@ -131,4 +131,4 @@ make_queries([], []).
 make_queries([H|T], [Extension|Q]) :-
 	atomic_concat('no ', H, HQ),
 	query(HQ, Extension),
-	make_queries(T, Q).
+	make_queries(T, Q). 
