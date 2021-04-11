@@ -35,12 +35,13 @@ construct_url(Food, Queries, QURL) :-
 
 
 %% adds all necessary extensions for the given list of queries
-add_queries(URL1, [], QURL).
+add_queries(URL1, [], URL1).
 
-add_queries(URL1, [query(Key, Val)|T], QURL) :-
-	string_concat(URL1, Val, URL),
-	add_queries(URL, T, URL, QURL).
+add_queries(URL1, [Restriction|T], QURL) :-
+	string_concat(URL1, Restriction, URL),
+	add_queries(URL, T, QURL).
 
+%% try: add_queries("www.food.com", [query(vegan, A)], QURL).
 
 %% Retrives all reciepes 
 fetch_recipes(URL, Data) :-
@@ -64,3 +65,7 @@ add_allergy(URL, [H|T], AURL) :-
 	name_value('&excluded', Allergy, AllergyPair),
 	string_concat(URL, AllergyPair, URL1),
 	add_allergy(URL1, T, AURL).
+
+ask_api(Food, Restrictions, A) :-
+	construct_url(Food, Restrictions, URL),
+	fetch_recipes(URL, A).
