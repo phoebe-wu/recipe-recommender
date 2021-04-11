@@ -27,8 +27,8 @@ construct_url(Food, Queries, QURL) :-
 	name_value("app_id", Id, IdPair),
 	api_key(Key),
 	name_value("app_key", Key, KeyPair),
-	replace(Food, FoodPlus),
-	name_value("q", FoodPlus, FoodPair),
+	%%replace(Food, FoodPlus),
+	name_value("q", Food, FoodPair),
 	atomics_to_string([IdPair, KeyPair, FoodPair], '&', Tail),
 	string_concat("https://api.edamam.com/search?", Tail, URL),
 	add_queries(URL, Queries, QURL).
@@ -36,7 +36,6 @@ construct_url(Food, Queries, QURL) :-
 
 %% adds all necessary extensions for the given list of queries
 add_queries(URL1, [], URL1).
-
 add_queries(URL1, [Restriction|T], QURL) :-
 	string_concat(URL1, Restriction, URL),
 	add_queries(URL, T, QURL).
@@ -52,16 +51,16 @@ fetch_recipes(URL, Data) :-
 	).
 
 %% replaces possible spaces with "+" for foods with more than one word
-replace(X,Y) :-
-	split_string(X, "\s", "\s", L),
-	atomic_list_concat(L, '+', Y).
+%%replace(X,Y) :-
+	%%split_string(X, "\s", "\s", L),
+	%%atomic_list_concat(L, '+', Y).
 
 %% add allergies
 %% use query kb for (peaunuts, nuts, red meat, soy, dairy, shellfish, wheat, pork, fish, gluten).
-add_allergy(URL, [], AURL).
+add_allergy(URL, [], URL).
 add_allergy(URL, [H|T], AURL) :-
-	replace(H,Allergy),
-	name_value('&excluded', Allergy, AllergyPair),
+	atom_string(H, Allergy),
+	name_value("&excluded", Allergy, AllergyPair),
 	string_concat(URL, AllergyPair, URL1),
 	add_allergy(URL1, T, AURL).
 
