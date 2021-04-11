@@ -75,10 +75,16 @@ ask_api(Food, Restrictions, A) :-
 	fetch_recipes(URL, A).
 
 %% gets details from the first recipe
-get_recipe_details(Data, Title, Ingredients, Link) :-
+print_recipe_details(Data) :-
 	Hits = Data.get('hits'),
 	nth1(1, Hits, FirstHit),
 	Recipe = FirstHit.get('recipe'),
 	Title = Recipe.get('label'),
 	Ingredients = Recipe.get('ingredientLines'),
-	Link = Recipe.get('url').
+	Link = Recipe.get('url'),
+	write("We recommend, "),
+	writeln(Title),
+	writeln("Ingredient List: "),
+	writeln(Ingredients),
+	write("Link to Recipe: "),
+	writeln(Link).

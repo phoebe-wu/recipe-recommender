@@ -32,13 +32,7 @@ start :-
 
 ask(Q,A) :-
 	fetch_recipes(Q, A),
-	get_recipe_details(A, Title, Ingredients, Link),
-	write("We recommend, "),
-	writeln(Title),
-	writeln("Ingredient List: "),
-	writeln(Ingredients),
-	write("Link to Recipe: "),
-	writeln(Link).
+	print_recipe_details(A).
 
 prelim_ask(Q, URL) :-
      recipe_request(Q, [], Food, C, []),
@@ -63,6 +57,7 @@ recipe_request(P0, P4, Entity, C0, C3) :-
 leading_phrase(['I', 'want', 'to', 'cook' |P], P).
 leading_phrase(['I', 'want', 'to', 'make' |P], P).
 leading_phrase(['I', 'am', 'allergic', 'to'|P], P).
+leading_phrase(['I\'m', 'allergic', 'to'|P], P).
 leading_phrase(P,P).
 
 det(['some' |P],P,_,C,C).
@@ -80,7 +75,6 @@ food_phrase(P0, P2, Entity, C0, C2) :-
 %% NOTE: might cause problems if we have a list of Queries and Adjectives (NEED SOLUTION)
 %% 		-- could we make a query from the Adj (?????)
 %% 
-
 adjectives([Restriction|T], P, _, [Extension|C0], C) :-
 	query(Restriction, Extension),
 	adjectives(T, P, _, C0, C).
@@ -144,7 +138,10 @@ allergies(P0, P2) :-
 	allergens(P1, P2).
 
 %% allergens is the list of things user wants absent from their recipes
-allergens(P,P).
+allergens(P,P2) :-
+	delete(P, ',', P1),
+	delete(P1, 'and', P2).
+
 
 %% separates allergies into those who are queries in kb and those who are not
 separate_allergies(L, Q, A) :-
