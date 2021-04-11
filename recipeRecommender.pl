@@ -54,16 +54,26 @@ food_phrase(P0, P2, Entity, C0, C2) :-
 
 %% try: food_phrase([wheat, free, brownies], P, brownies, C, C1).
 
+food([Food|P],P,Food,C,C).
+food(P,_,Food,C,C) :-
+	multi_part_food(P,Food).
+
+multi_part_food(P,Food) :-
+	atomic_list_concat(P,'+',Food).
+
 %% UNFINISHED!!! 
 %% NOTE: might cause problems if we have a list of Queries and Adjectives (NEED SOLUTION)
 %% 		-- could we make a query from the Adj (?????)
 %% 
-adjectives([Restriction|P], P, _, [Extension|C], C) :-
-	query(Restriction, Extension).
-adjectives(RP, P, _, [Extension|C], C) :-
+%%adjectives([],_,_,[],_).
+adjectives([Restriction|P], P1, Entity, [Extension|C], C1) :-
+	query(Restriction, Extension),
+	adjectives(P,P1,Entity,C,C1).
+adjectives(RP, P1, Entity, [Extension|C], C1) :-
 	append(R,P, RP),
-	multi_part_word(R, Restriction),
-	query(Restriction, Extension).
+	multi_part_adj(R, Restriction),
+	query(Restriction, Extension),
+	adjectives(P,P1,Entity,C,C1).
 adjectives(P,P,_,C,C).
 
 %% try: adjectives([vegan, chicken], P, E, C, C1).
@@ -72,15 +82,16 @@ adjectives(P,P,_,C,C).
 %% try: adjectives([vegan, chicken, with, no, shellfish], P, E, C, C1).
 %% try: adjectives([gluten, free, brownies], P, E, C, C1).
 %% try: adjectives([wheat, free, brownies], P, E, C, C1).
+%% try: adjectives([vegan, wheat, free, brownies], P, E, C, C1).
 
-multi_part_word(P,W) :-
+multi_part_adj(P,W) :-
 	standardize_free(P,W).
-multi_part_word(P,W) :-
+multi_part_adj(P,W) :-
 	atomic_list_concat(P, ' ', W).
-multi_part_word(P,W) :-
+multi_part_adj(P,W) :-
 	atomic_list_concat(P,W).
 	
-%% try: multi_part_word([no, wheat, brownies], W).
+%% try: multi_part_adj([no, wheat, brownies], W).
 
 %% standardizes decriptors such as "gluten free" or "gluten free" into "no gluten"
 standardize_free([O, '-', 'free'], W) :-
@@ -89,9 +100,6 @@ standardize_free([O, 'free'], W) :-
 	atomic_list_concat(['no', O], ' ', W).
 
 %% try: standardize_free([wheat, free], W).
-
-
-food([Food|P],P,Food,C,C).
 
 %% try: food([chicken, with, no, shellfish], P, F, C, C).
 
