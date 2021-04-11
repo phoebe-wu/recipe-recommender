@@ -28,17 +28,32 @@ start :-
     readln(TimeLn),
     atomics_to_string(TimeLn, Time),
     add_time_constraint(Next_URL, Time, Final_URL),
-    ask(Final_URL,A).
+    fetch_recipes(Final_URL, A),
+    nb_setval(count, 0),
+    handle_request(yes, A).
 
-ask(Q,A) :-
-	fetch_recipes(Q, A),
-	get_recipe_details(A, Title, Ingredients, Link),
-	write("We recommend, "),
-	writeln(Title),
-	writeln("Ingredient List: "),
-	writeln(Ingredients),
-	write("Link to Recipe: "),
-	writeln(Link).
+handle_request(yes, A) :-
+	nb_getval(count, C), NewC is C + 1, nb_setval(count, NewC),
+	nb_getval(count, Num),
+	nl,
+	print_recipe_details(A, Num),
+	nl,
+	write("Would you like to see a different recipe? (yes or no) "),
+	readln(AnotherLn),
+	yes_or_no(AnotherLn, A).
+
+handle_request(yes, []) :-
+	write("That is all our recommendations. Please do a different search ").
+
+handle_request(no, A) :-
+	nl,
+	write("Thank you for using our recipe recommender! ").
+
+yes_or_no(['yes'|P], A) :-
+	handle_request(yes, A).
+
+yes_or_no(['no'|P], A) :-
+	handle_request(no, A).
 
 prelim_ask(Q, URL) :-
      recipe_request(Q, [], Food, C, []),
@@ -63,6 +78,7 @@ recipe_request(P0, P4, Entity, C0, C3) :-
 leading_phrase(['I', 'want', 'to', 'cook' |P], P).
 leading_phrase(['I', 'want', 'to', 'make' |P], P).
 leading_phrase(['I', 'am', 'allergic', 'to'|P], P).
+leading_phrase(['I\'m', 'allergic', 'to'|P], P).
 leading_phrase(P,P).
 
 det(['some' |P],P,_,C,C).
@@ -80,7 +96,6 @@ food_phrase(P0, P2, Entity, C0, C2) :-
 %% NOTE: might cause problems if we have a list of Queries and Adjectives (NEED SOLUTION)
 %% 		-- could we make a query from the Adj (?????)
 %% 
-
 adjectives([Restriction|T], P, _, [Extension|C0], C) :-
 	query(Restriction, Extension),
 	adjectives(T, P, _, C0, C).
@@ -148,7 +163,10 @@ allergies(P0, P2) :-
 	allergens(P1, P2).
 
 %% allergens is the list of things user wants absent from their recipes
-allergens(P,P).
+allergens(P,P2) :-
+	delete(P, ',', P1),
+	delete(P1, 'and', P2).
+
 
 %% separates allergies into those who are queries in kb and those who are not
 separate_allergies(L, Q, A) :-

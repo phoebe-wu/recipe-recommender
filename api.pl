@@ -74,11 +74,21 @@ ask_api(Food, Restrictions, A) :-
 	construct_url(Food, Restrictions, URL),
 	fetch_recipes(URL, A).
 
-%% gets details from the first recipe
-get_recipe_details(Data, Title, Ingredients, Link) :-
+%% gets details from the recipe at Num index
+print_recipe_details(Data, Num) :-
 	Hits = Data.get('hits'),
-	nth1(1, Hits, FirstHit),
+	nth1(Num, Hits, FirstHit),
 	Recipe = FirstHit.get('recipe'),
 	Title = Recipe.get('label'),
 	Ingredients = Recipe.get('ingredientLines'),
-	Link = Recipe.get('url').
+	Link = Recipe.get('url'),
+	write("We recommend, "),
+	writeln(Title),
+	writeln("Ingredient List: "),
+	writeln(Ingredients),
+	write("Link to Recipe: "),
+	writeln(Link).
+
+print_recipe_details(Data, 11) :-
+	write("That is all our recommendations. Please do a different search "),
+	break().
