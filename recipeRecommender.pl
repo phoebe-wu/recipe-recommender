@@ -25,8 +25,8 @@ start :-
     allergy_ask(NextLn, Allergy_Extensions),
     string_concat(Prelim_URL, Allergy_Extensions, Next_URL),
     write("How much time do you have? "),
-    readln(LastLn),
-    atomics_to_string(LastLn, Time),
+    readln(TimeLn),
+    atomics_to_string(TimeLn, Time),
     add_time_constraint(Next_URL, Time, Final_URL),
     ask(Final_URL,A).
 
@@ -78,8 +78,9 @@ food_phrase(P0, P2, Entity, C0, C2) :-
 %% NOTE: might cause problems if we have a list of Queries and Adjectives (NEED SOLUTION)
 %% 		-- could we make a query from the Adj (?????)
 %% 
-adjectives([Restriction|P], P, _, [Extension|C], C) :-
-	query(Restriction, Extension).
+adjectives([Restriction|T], P, _, [Extension|C0], C) :-
+	query(Restriction, Extension),
+	adjectives(T, P, _, C0, C).
 adjectives(P,P,_,C,C).
 
 %% try: adjectives([vegan, chicken], P, E, C, C1).
