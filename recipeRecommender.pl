@@ -28,7 +28,6 @@ start :-
     readln(TimeLn),
 	handle_time(TimeLn, Time),
     add_time_constraint(Next_URL, Time, Final_URL),
-    writeln(Final_URL), %% testing - REMEMBER TO REMOVE LATER
     fetch_recipes(Final_URL, A),
     nb_setval(count, 0),
     handle_request(yes, A).
