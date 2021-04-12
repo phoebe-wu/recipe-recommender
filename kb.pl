@@ -38,3 +38,18 @@ query('drink', "&dishType=Drinks").
 query(EP, EQ) :-
     atom_concat('no ', E, EP),
     atomic_concat("&excluded=", E, EQ).
+
+number_word(one,1).
+number_word(two,2).
+number_word(three,3).
+number_word(four,4).
+number_word(five,5).
+number_word(six,6).
+number_word(seven,7).
+number_word(eight,8).
+number_word(nine,9).
+number_word(ten,10).
+number_word(twenty,20).
+number_word(thirty,30).
+number_word(fourty,40).
+number_word(fifty,50).

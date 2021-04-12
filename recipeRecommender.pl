@@ -16,17 +16,17 @@
 
 
 start :-
-    write("What would you like to cook? "), 
+    write("What would you like to cook?\n"), 
     flush_output(current_output),
     readln(Ln),
     prelim_ask(Ln, Prelim_URL),
-    write("Please list any allergies. Enter none if you do not have any allergies "),
+    write("Please list any allergies. Enter none if you do not have any allergies\n"),
     readln(NextLn),
     allergy_ask(NextLn, Allergy_Extensions),
     string_concat(Prelim_URL, Allergy_Extensions, Next_URL),
-    write("How much time do you have? "),
+    write("How much time do you have?\n"),
     readln(TimeLn),
-    atomics_to_string(TimeLn, Time),
+	handle_time(TimeLn, Time),
     add_time_constraint(Next_URL, Time, Final_URL),
     writeln(Final_URL), %% testing - REMEMBER TO REMOVE LATER
     fetch_recipes(Final_URL, A),
@@ -41,17 +41,17 @@ handle_request(yes, A) :-
 	nl,
 	print_recipe_details(A, Num),
 	nl,
-	write("Would you like to see a different recipe? (yes or no) "),
+	write("Would you like to see a different recipe? (yes or no)\n"),
 	readln(AnotherLn),
 	yes_or_no(AnotherLn, A).
 
 %% ends program when user does not want to see any more recipes
-handle_request(no, A) :-
+handle_request(no, _) :-
 	nl,
 	write("Thank you for using our recipe recommender! ").
 
 %% parses user response if they want to see more recipes
-yes_or_no([R|P], A) :-
+yes_or_no([R|_], A) :-
 	handle_request(R, A).
 
 %% constructs preliminary URL based on users first recipe request
@@ -66,6 +66,24 @@ allergy_ask(Q, Extensions) :-
 	parse_query_extensions(Q1, Q2),
     atomics_to_string(Q2, Q3),
 	add_allergy(Q3, A1, Extensions).
+
+
+%% parses a time phrase into that time in minutes
+handle_time([W|T], Time) :-
+	number_word(W,N),
+	handle_time([N|T],Time).
+handle_time([N,'hour'], Time) :-
+	number(N),
+	Time is N * 60.
+handle_time([N,'hours'], Time) :-
+	number(N),
+	Time is N * 60.
+handle_time([N,'minutes'], N) :-
+	number(N).
+handle_time([N,'minute'], N) :-
+	number(N).
+handle_time([N], N) :-
+	number(N).		
 
 %% The recipe request made
 %% P0 and P4 are lists of words, that forms the recipe request

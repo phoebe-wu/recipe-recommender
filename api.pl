@@ -93,6 +93,6 @@ print_recipe_details(Data, Num) :-
 	write("Link to Recipe: "),
 	writeln(Link).
 
-print_recipe_details(Data, 11) :-
+print_recipe_details(_, 11) :-
 	write("That is all our recommendations. Please do a different search "),
 	break().
