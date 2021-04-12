@@ -115,6 +115,7 @@ adjectives(P,P,_,C,C).
 %% try: adjectives([gluten, free, brownies], P, E, C, C1).
 %% try: adjectives([wheat, free, brownies], P, E, C, C1).
 
+%% returns true if a list of words can be made into one word
 multi_part_word(P,W) :-
 	standardize_free(P,W).
 multi_part_word(P,W) :-
@@ -143,11 +144,17 @@ food(P0,P1,Food,C,C) :-
 %% An optional modifying phrase that further modifies the recipe criteria
 modifying_phrase(['that', 'is'|P0], P1, _, C0, C1) :-
 	adjectives(P0,P1,_,C0,C1).
-modifying_phrase(['that\'s'|P0], P1, _, C0, C1) :-
+modifying_phrase(['that', 'does', 'not', 'have'|P0], P1, _, C0, C1) :-
+	adjectives(['no'|P0],P1,_,C0,C1).
+modifying_phrase(['that', 'doesn', '\'', 't', 'have'|P0], P1, _, C0, C1) :-
+	adjectives(['no'|P0],P1,_,C0,C1).
+modifying_phrase(['that', 'don', '\'', 't', 'have'|P0], P1, _, C0, C1) :-
+	adjectives(['no'|P0],P1,_,C0,C1).		
+modifying_phrase(['that', '\'', 's'|P0], P1, _, C0, C1) :-
 	adjectives(P0,P1,_,C0,C1).
 modifying_phrase(['that', 'are'|P0], P1, _, C0, C1) :-
 	adjectives(P0,P1,_,C0,C1).
-modifying_phrase(['that\'re'|P0], P1, _, C0, C1) :-
+modifying_phrase(['that', '\'', 're'|P0], P1, _, C0, C1) :-
 	adjectives(P0,P1,_,C0,C1).
 modifying_phrase(['without'|P0], P1, _, C0, C1) :-
 	adjectives(['no'|P0],P1,_,C0,C1).
