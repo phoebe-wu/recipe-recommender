@@ -35,7 +35,7 @@ Possible User Inputs:
 
 ***URL to recipe***
 
-***Would you like to see a different recipe? (yes or no)***
+**Would you like to see a different recipe? (yes or no)**
 
 Possible User Inputs:
 
