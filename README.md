@@ -1,6 +1,7 @@
 # Recipe Recommender
 
 A recipe recommender implemented in Prolog
+Program uses NLP to parse user's recipe request and pulls a recipe from an API that satisfies all of the inputted criteria. 
 
 ## Sample:
 
@@ -30,7 +31,8 @@ Possible User Inputs:
 
 - peanuts
 - soy
-- gluten
+- I am allergic to shellfish, tomatoes, and lobster
+- ginger, oranges, and celery
 
 **Output: "How much time do you have?"**
 
@@ -56,7 +58,7 @@ Possible User Inputs:
 
 "yes" will show more recipes
 
-## Prereqs
+## Prerequistes
 
 - swipl on terminal is recommended.
 - You must have an Edamam App ID and API key. Get one [here](https://developer.edamam.com/edamam-recipe-api).
