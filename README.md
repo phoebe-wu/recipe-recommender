@@ -1,35 +1,38 @@
 # Recipe Recommender
+
 A recipe recommender implemented in Prolog
 
-%% Sample:
-%% Output: "What would you like to make?"
+Sample:
+Output: "What would you like to cook?"
 
-%% Possible User Inputs:
-%% "Soy sauce chicken"
-%% "Gluten-free pizza dough"
-%% "falafel"
-%% "desset"
-%% "vegetarian pizza"
-%% gluten-free bread
-%% vegan carrot cake
-%% dumplings with no meat
-%% barbeque chicken wings that are peanut free
-%% keto fried chicken
-%% low carb pasta 
-%% a pizza that is vegan
+Possible User Inputs:
+soy sauce chicken
+gluten-free pizza dough
+falafel
+desset
+vegetarian pizza
+gluten-free bread
+vegan carrot cake
+dumplings with no meat
+barbeque chicken wings that are peanut free
+keto fried chicken
+low carb pasta
+a pizza that is vegan
 
-%% Output: "Do you have any allergies?"
+Output: "Please list any allergies. Enter none if you do not have any allergies"
 
-%% Possible User Inputs:
-%% "peanuts"
-%% "soy"
-%% "gluten"
+Possible User Inputs:
+peanuts
+soy
+gluten
 
-%% Output: "Do you have any dietary preferences?"
-%% "keto"
-%% "vegan"
+Output: "We recommend, *name of recipe*"
+*Ingredients*
+*URL to recipe*
+Would you like to see a different recipe? (yes or no)
 
-%% Output: "What about this?"  (or something like this)
-%% Recipe title
-%% Ingredients
-%% URL to recipe
+Possible User Inputs:
+yes
+no
+
+"yes" will show more recipes
