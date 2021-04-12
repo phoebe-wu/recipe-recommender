@@ -21,8 +21,9 @@ Possible User Inputs:
 - low carb pasta
 - a pizza that is vegan
 - nut free apple pie without cinnamon
-- some oatmeal cookies that doesn't have raisins
+- some oatmeal cookies that don't have raisins
 - cilantro free pho
+- pie that doesn't have shortening
 
 **Output: "Please list any allergies. Enter none if you do not have any allergies"**
 
