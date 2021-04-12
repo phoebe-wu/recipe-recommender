@@ -20,6 +20,9 @@ Possible User Inputs:
 - keto fried chicken
 - low carb pasta
 - a pizza that is vegan
+- nut free apple pie without cinnamon
+- some oatmeal cookies that doesn't have raisins
+- cilantro free pho
 
 **Output: "Please list any allergies. Enter none if you do not have any allergies"**
 
@@ -28,6 +31,15 @@ Possible User Inputs:
 - peanuts
 - soy
 - gluten
+
+**Output: "How much time do you have?"**
+
+Possible User Inputs:
+
+- 50 minutes
+- 3 hours
+- four hours
+
 
 **Output: "We recommend, *name of recipe*"**
 
