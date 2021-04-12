@@ -1,4 +1,4 @@
-% api.pl 
+% api.pl manages communication between recipe recommender and api
 :- use_module(library(http/json)).
 :- use_module(library(http/http_open)).
 :- consult(kb).
@@ -27,20 +27,10 @@ construct_url(Food, Queries, QURL) :-
 	name_value("app_id", Id, IdPair),
 	api_key(Key),
 	name_value("app_key", Key, KeyPair),
-	%%replace(Food, FoodPlus),
 	name_value("q", Food, FoodPair),
 	atomics_to_string([IdPair, KeyPair, FoodPair], '&', Tail),
 	string_concat("https://api.edamam.com/search?", Tail, URL),
 	add_queries(URL, Queries, QURL).
-
-
-%% adds all necessary extensions for the given list of queries
-add_queries(URL1, [], URL1).
-add_queries(URL1, [Restriction|T], QURL) :-
-	string_concat(URL1, Restriction, URL),
-	add_queries(URL, T, QURL).
-
-%% try: add_queries("www.food.com", [query(vegan, A)], QURL).
 
 %% Retrives all reciepes 
 fetch_recipes(URL, Data) :-
@@ -50,10 +40,29 @@ fetch_recipes(URL, Data) :-
 		close(In)
 	).
 
-%% replaces possible spaces with "+" for foods with more than one word
-%%replace(X,Y) :-
-	%%split_string(X, "\s", "\s", L),
-	%%atomic_list_concat(L, '+', Y).
+%% adds all necessary extensions for the given list of queries
+add_queries(URL1, [], URL1).
+add_queries(URL1, [Restriction|T], QURL) :-
+	string_concat(URL1, Restriction, URL),
+	add_queries(URL, T, QURL).
+
+%% try: add_queries("www.food.com", [query(vegan, A)], QURL).
+
+%% is_query returns true if Q is a query
+is_query(Q) :-
+	member(Q, [gluten, shellfish, soy, wheat, peanuts, diary, pork, fish, nuts]).
+
+%% takes lists of queries and returns their extensions
+parse_query_extensions([], []).
+parse_query_extensions([H|T], [Extension|Q]) :-
+	atomic_concat('no ', H, HQ),
+	query(HQ, Extension),
+	parse_query_extensions(T, Q). 
+
+%% separates allergies into those who are queries in kb and those who are not
+separate_allergies(L, Q, A) :-
+	include(is_query, L, Q),
+	exclude(is_query, L, A).
 
 %% add allergies
 %% use query kb for (peaunuts, nuts, red meat, soy, dairy, shellfish, wheat, pork, fish, gluten).
@@ -68,11 +77,6 @@ add_allergy(URL, [H|T], AURL) :-
 add_time_constraint(URL, Time, TURL) :-
 	name_value('&time', Time, TimePair),
 	string_concat(URL, TimePair, TURL).
-
-
-ask_api(Food, Restrictions, A) :-
-	construct_url(Food, Restrictions, URL),
-	fetch_recipes(URL, A).
 
 %% gets details from the recipe at Num index
 print_recipe_details(Data, Num) :-

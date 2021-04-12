@@ -1,3 +1,5 @@
+%% kb.pl contains URL extensions for the queries/constraints supported by recipe recommender
+
 query('keto', "&health=keto-friendly").
 query('vegan', "&health=vegan").
 query('vegetarian', "&health=vegetarian").
