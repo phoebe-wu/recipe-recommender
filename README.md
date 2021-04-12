@@ -2,7 +2,7 @@
 
 A recipe recommender implemented in Prolog
 
-###Sample:
+### Sample:
 
 **Output: "What would you like to cook?"**
 
@@ -43,3 +43,16 @@ Possible User Inputs:
 - no
 
 "yes" will show more recipes
+
+##Prereqs
+
+- swipl on terminal is recommended.
+- You must have an Edamam App ID and API key. Get one [here](https://developer.edamam.com/edamam-recipe-api).
+- You must set env variables EDAMAM_APP_ID with your app ID and EDAMAM_API_KEY with your API key.
+
+## To run
+
+1. run `[recipeRecommender].` in swipl.
+2. type `start.`
+3. have fun!
+
