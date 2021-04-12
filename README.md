@@ -1,6 +1,7 @@
 # Recipe Recommender
 
 A recipe recommender implemented in Prolog
+
 Program uses NLP to parse user's recipe request and pulls a recipe from an API that satisfies all of the inputted criteria. 
 
 ## Sample:
