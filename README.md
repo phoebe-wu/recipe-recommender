@@ -10,12 +10,12 @@ Program uses NLP to parse user's recipe request and pulls a recipe from an API t
 
 Possible User Inputs:
 
-- soy sauce chicken
-- gluten-free pizza dough
 - falafel
 - dessert
 - vegetarian pizza
 - gluten-free bread
+- soy sauce chicken
+- gluten-free pizza dough
 - vegan carrot cake
 - dumplings with no meat
 - barbeque chicken wings that are peanut free
@@ -23,7 +23,7 @@ Possible User Inputs:
 - low carb pasta
 - a pizza that is vegan
 - nut free apple pie without cinnamon
-- some oatmeal cookies that don't have raisins
+- some oatmeal cookies that doesn't have raisins
 - cilantro free pho
 - pie that doesn't have shortening
 
